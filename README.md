@@ -1,3 +1,9 @@
+##News Tracker
+
+A news tracking application that makes use of newsapi to deliver all your preferred news in one place.
+
+Written in React.js.
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts

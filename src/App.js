@@ -1,26 +1,32 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  useHistory
+} from "react-router-dom";
+import Login from './components/Login';
+import Signup from './components/Signup';
+import Home from './components/Home'
+import DetailedContent from './components/DetailedContent'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export default function App(){
+  const history = useHistory();
+
+  return(
+    <Router history = {history}>
+    <Switch>
+        <Route exact path="/" component={props => <Login />}/>
+        
+        <Route path="/signup" component={props => <Signup />}/>
+
+        <Route path="/home" component={props => <Home />}/>
+
+        <Route path="/detailedcontent" component={props => <DetailedContent />}/>
+        
+      </Switch>
+    </Router>
+    );
 }
 
-export default App;
+
