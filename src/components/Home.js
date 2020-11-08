@@ -25,6 +25,7 @@ export default function Home(){
     console.log(location.state);
 
     if(location.state === undefined || location.state === null){
+        console.log("Home state not found")
         history.replace("/");
       }
 

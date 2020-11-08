@@ -45,6 +45,7 @@ export default function Login(props){
             username: res.data["result"]['username'], 
             tags: res.data["result"]["tags"],
             country: res.data["result"]["country"],
+            sources: res.data["result"]["sources"],
           });
         }
         

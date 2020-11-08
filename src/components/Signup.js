@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {TextField} from '@material-ui/core';
 
 import {
@@ -23,7 +23,8 @@ export default function Signup(props){
   const [invokeUrl] = React.useState("http://127.0.0.1:5000/newsify")
 
   const [ tags, setTags ] = React.useState([]);
-
+  const [ sources, setSources ] = React.useState([]);
+  const [ sourceSuggestions, setSourceSuggestions ] = React.useState([]);
   const history = useHistory();
 
   const KeyCodes = {
@@ -33,6 +34,18 @@ export default function Signup(props){
   };
    
   const delimiters = [KeyCodes.comma, KeyCodes.enter, KeyCodes.tab];
+
+  // API call to get sources
+  useEffect(() => {
+    var url = 'http://127.0.0.1:5000/newsify/sources';
+    axios.get(url)
+    .then(res => {
+      setSourceSuggestions(res.data['result']);
+    }).catch(error => {
+        console.log(error);
+    })
+
+}, [])
 
   const updateUsername = (e) => {
     setUsername(e.target.value);
@@ -74,6 +87,7 @@ export default function Signup(props){
         "password": password,
         "country" :country,
         "tags": tags,
+        "sources" : sources,
       })
       .then(res => {
         if(res.data["result"] === "Exists"){
@@ -91,19 +105,32 @@ export default function Signup(props){
     history.push("/", );
   }
 
-  const handleDelete = (i) => {
+  const handleDelete = (i, flag) => {
+      if(flag === 1){
+        let tempTags = tags.filter((tag, index) => index !== i);
+
+        setTags(tempTags);
+      }
+      else {
+        let tempSources = sources.filter((source, index) => index !== i);
+
+        setSources(tempSources);
+      }
       
-      let tempTags = tags.filter((tag, index) => index !== i);
-
-      setTags(tempTags);
   }
 
-  const handleAddition = (newTag) => {
+  const handleAddition = (newTag, flag) => {
+    if(flag === 1) {
       setTags([...tags, newTag]);
-      console.log(tags);
+    }
+    else {
+      setSources([...sources, newTag]);
+    }
+      
   }
 
-  const handleDrag = (tag, currPos, newPos) => {
+  const handleDrag = (tag, currPos, newPos, flag) => {
+    if(flag === 1) {
       const tempTags = tags;
       const newTags = tempTags.slice();
 
@@ -112,6 +139,18 @@ export default function Signup(props){
 
       // re-render
       setTags(newTags);
+    }
+    else {
+      const tempSources = sources;
+      const newSources = tempSources.slice();
+
+      newSources.splice(currPos, 1);
+      newSources.splice(newPos, 0, tag);
+
+      // re-render
+      setSources(newSources);
+    }
+      
   }
 
   return(
@@ -169,16 +208,40 @@ export default function Signup(props){
         tag: 'ReactTags__selected ReactTags__tag',
         remove: 'ReactTags__selected ReactTags__remove',
         suggestions: 'ReactTags__suggestions',
-        activeSuggestion: 'ReactTags__suggestions'
+        activeSuggestion: 'ReactTags__activeSuggestion'
       }} 
+      placeholder  = {'Keywords'}
       inline={false}
       tags={tags}
-      handleDelete={handleDelete}
-      handleAddition={handleAddition}
-      handleDrag={handleDrag}
+      handleDelete={(i) => handleDelete(i, 1)}
+      handleAddition={(newTag) => handleAddition(newTag, 1)}
+      handleDrag={(tag, currPos, newPos) => handleDrag(tag, currPos, newPos, 1)}
       delimiters={delimiters} />
     <br/>
-    <br/>                    
+    <br/>
+
+    <ReactTags
+      classNames={{
+        tags: 'ReactTags__tags',
+        tagInput: 'ReactTags__tagInput',
+        tagInputField: 'ReactTags__tagInputField',
+        selected: 'ReactTags__selected',
+        tag: 'ReactTags__selected ReactTags__tag',
+        remove: 'ReactTags__selected ReactTags__remove',
+        suggestions: 'ReactTags__suggestions',
+        activeSuggestion: 'ReactTags__activeSuggestion'
+      }} 
+      placeholder  = {'News sources'}
+      inline={false}
+      tags={sources}
+      suggestions = {sourceSuggestions}
+      handleDelete={(i) => handleDelete(i, 2)}
+      handleAddition={(newTag) => handleAddition(newTag, 2)}
+      handleDrag={(tag, currPos, newPos) => handleDrag(tag, currPos, newPos, 2)}
+      delimiters={delimiters} />
+    <br/>
+    <br/>
+
     <Button style = {styling.button} 
             onClick = {createCredentials}
             variant = 'dark'>Create account</Button>
