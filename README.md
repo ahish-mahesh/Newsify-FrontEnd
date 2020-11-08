@@ -1,4 +1,4 @@
-##News Tracker
+## News Tracker
 
 A news tracking application that makes use of newsapi to deliver all your preferred news in one place.
 
