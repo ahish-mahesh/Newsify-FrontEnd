@@ -34,13 +34,18 @@ export default function Login(props){
       window.alert("Enter a valid password.")
     }
     else {
-      axios.get(invokeUrl+'/users?user_name='+username+'&password='+password)
+      axios.get(invokeUrl+'/users?username='+username+'&password='+password)
       .then(res => {
-        if(res.data.length === 0) {
+        if(res.data["result"] === "Invalid") {
+          console.log()
           window.alert("Invalid credentials!");
         }
         else {
-          history.push('/home', {username: res.data[0]['USERNAME']});
+          history.push('/home', {
+            username: res.data["result"]['username'], 
+            tags: res.data["result"]["tags"],
+            country: res.data["result"]["country"],
+          });
         }
         
       }).catch(error => {
@@ -69,6 +74,7 @@ export default function Login(props){
                 label="Password:" 
                 variant="outlined" 
                 type="password"
+                onKeyPress = {(e) => e.key === "Enter" ? validateCredentials() : null}
                 onChange = {updatePassword}/>
     <br/>
     <Button variant="dark" 
@@ -104,6 +110,8 @@ const styling = {
   },
   title: {
     marginTop: '1vh',
+    fontSize: "60px",
     fontWeight: 'bold',
+    fontFamily: "Poynter"
   }
 };

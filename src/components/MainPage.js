@@ -10,8 +10,8 @@ import {CardDeck, Card, Button } from 'react-bootstrap'
 
 
 export default function MainPage(props) {
-    console.log("Mainpage props");
-    console.log(props);
+    // console.log("Mainpage props");
+    // console.log(props);
     const [headlines, setHeadlines] = React.useState(null);
     const [appleNews, setAppleNews] = React.useState(null);
     const [bbcNews, setBbcNews] = React.useState(null);
@@ -20,7 +20,7 @@ export default function MainPage(props) {
 
     // API call to get news
     useEffect(() => {
-        var url = 'http://newsapi.org/v2/top-headlines?country=in&pageSize=3&apiKey=7ac4dc02591646bf91c5a3ccf45633f4';
+        var url = 'http://newsapi.org/v2/top-headlines?country='+props.userDetails.country+'&pageSize=3&language=en&apiKey=7ac4dc02591646bf91c5a3ccf45633f4';
         axios.get(url)
         .then(res => {
           console.log(res.data.articles);
@@ -29,7 +29,7 @@ export default function MainPage(props) {
             console.log(error);
         })
 
-        url = 'http://newsapi.org/v2/top-headlines?sources=bbc-news&pageSize=3&apiKey=7ac4dc02591646bf91c5a3ccf45633f4';
+        url = 'http://newsapi.org/v2/top-headlines?sources=bbc-news&pageSize=3&language=en&apiKey=7ac4dc02591646bf91c5a3ccf45633f4';
         axios.get(url)
         .then(res => {
           console.log(res.data.articles);
@@ -38,7 +38,7 @@ export default function MainPage(props) {
             console.log(error);
         })
 
-        url = 'http://newsapi.org/v2/everything?q=Apple&from=2020-10-21&sortBy=popularity&pageSize=3&apiKey=7ac4dc02591646bf91c5a3ccf45633f4';
+        url = 'http://newsapi.org/v2/everything?q=Apple&from=2020-10-21&sortBy=popularity&pageSize=3&language=en&apiKey=7ac4dc02591646bf91c5a3ccf45633f4';
         axios.get(url)
         .then(res => {
           console.log(res.data.articles);
@@ -49,7 +49,7 @@ export default function MainPage(props) {
     }, [])
 
     const goToDetailedContent = (type) => {        
-        history.push('/detailedcontent', {username: props.username, type: type, pageNo : 1});
+        history.push('/detailedcontent', {username: props.userDetails.username, type: type, pageNo : 1});
     }
     
     const goToURL = (url) => {
@@ -95,21 +95,21 @@ export default function MainPage(props) {
 
     return (
         <div>
-            <h2 style = {styling.h2}>India Headlines</h2>
+            <h2 style = {styling.h2}><strong>India Headlines</strong></h2>
             {displayNews("headlines")}
             <br/>
             <a  onClick = {() => goToDetailedContent("headlines")}>More articles on India Headlines >></a>
             <br/>
             <br/>
 
-            <h2>BBC News</h2>
+            <h2><strong>BBC News</strong></h2>
             {displayNews("bbc")}
             <br/>
             <a  onClick = {() => goToDetailedContent("bbc")}>More articles from BBC >></a>
             <br/>
             <br/>
 
-            <h2>Apple</h2>
+            <h2><strong>Apple</strong></h2>
             {displayNews("apple")}
             <br/>
             <a  onClick = {() => goToDetailedContent("apple")}>More articles about Apple >></a>
