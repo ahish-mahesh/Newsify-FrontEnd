@@ -9,6 +9,7 @@ import axios from 'axios';
 import {Button } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+import Footer from './Footer';
 
 export default function Login(props){
   const [username, setUsername ]= React.useState("");
@@ -43,6 +44,7 @@ export default function Login(props){
         else {
           history.push('/home', {
             username: res.data["result"]['username'], 
+            password: res.data["result"]['password'], 
             tags: res.data["result"]["tags"],
             country: res.data["result"]["country"],
             sources: res.data["result"]["sources"],
@@ -50,7 +52,7 @@ export default function Login(props){
         }
         
       }).catch(error => {
-          window.alert("Invalid credentials.");
+          window.alert(error);
           console.log(error);
       }) 
     }
@@ -61,32 +63,38 @@ export default function Login(props){
   }
 
   return(
-  <div style={styling.mainDiv}>
-    <h1 style = {styling.title}> Newsify</h1>
-    <h2> Login</h2>
-    <TextField id="outlined-basic" 
-                style = {styling.textField}
-                label="Username:" 
-                variant="outlined" 
-                onChange = {updateUsername}/>
-    <br/>            
-    <TextField id="outlined-basic"
-                style = {styling.textField} 
-                label="Password:" 
-                variant="outlined" 
-                type="password"
-                onKeyPress = {(e) => e.key === "Enter" ? validateCredentials() : null}
-                onChange = {updatePassword}/>
-    <br/>
-    <Button variant="dark" 
-            style = {styling.button} 
-            onClick={validateCredentials}
-            >Login</Button>
-    <br/>
-    <Button style = {styling.button} 
-            onClick = {goToSignup}
-            variant = 'dark'>New user? Sign up</Button>
-  </div>);
+    <div>
+    <div style={styling.mainDiv}>
+      <h1 style = {styling.title}> Newsify</h1>
+      <h2> Login</h2>
+      <TextField id="outlined-basic" 
+                  style = {styling.textField}
+                  label="Username:" 
+                  variant="outlined" 
+                  onChange = {updateUsername}/>
+      <br/>            
+      <TextField id="outlined-basic"
+                  style = {styling.textField} 
+                  label="Password:" 
+                  variant="outlined" 
+                  type="password"
+                  onKeyPress = {(e) => e.key === "Enter" ? validateCredentials() : null}
+                  onChange = {updatePassword}/>
+      <br/>
+      <Button variant="dark" 
+              style = {styling.button} 
+              onClick={validateCredentials}
+              >Login</Button>
+      <br/>
+      <Button style = {styling.button} 
+              onClick = {goToSignup}
+              variant = 'dark'>New user? Sign up</Button>
+      
+      
+    </div>
+    <Footer />
+  </div>
+  );
 }
 
 

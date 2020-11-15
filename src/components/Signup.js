@@ -12,7 +12,6 @@ import { CountryDropdown } from 'react-country-region-selector';
 import { WithContext as ReactTags } from 'react-tag-input';
 import './Styling/reactTags.css';
 
-
 export default function Signup(props){
   const [username, setUsername ]= React.useState("");
   const [password, setPassword] = React.useState("");
@@ -108,12 +107,10 @@ export default function Signup(props){
   const handleDelete = (i, flag) => {
       if(flag === 1){
         let tempTags = tags.filter((tag, index) => index !== i);
-
         setTags(tempTags);
       }
       else {
         let tempSources = sources.filter((source, index) => index !== i);
-
         setSources(tempSources);
       }
       

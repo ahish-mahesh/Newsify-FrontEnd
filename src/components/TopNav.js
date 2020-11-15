@@ -24,12 +24,19 @@ export default function TopNav (props) {
     const [ collapse, setCollapse ] = React.useState(false);
 
     const goto = (url) => {
-        history.push("/home", {userDetails: props.userDetails});
+        history.push("/home", {
+            username: props.userDetails["username"],
+            password: props.userDetails["password"],
+            tags: props.userDetails["tags"],
+            country: props.userDetails["country"],
+            sources: props.userDetails["sources"],
+        });
     }
 
     const gotoUserProfile = () => {
         history.push("/userprofile", {
             username: props.userDetails["username"],
+            password: props.userDetails["password"],
             tags: props.userDetails["tags"],
             country: props.userDetails["country"],
             sources: props.userDetails["sources"],
@@ -50,14 +57,14 @@ export default function TopNav (props) {
             <header>
                 <Router>
                     <MDBNavbar style={Styling.navbar} dark expand="md" scrolling fixed="top" transparent>
-                        <MDBNavbarBrand href="/home" onClick={ goto } style = {Styling.title}>
+                        <MDBNavbarBrand onClick={ goto } style = {Styling.title}>
                             <strong>Newsify</strong>
                         </MDBNavbarBrand>
                         <MDBNavbarToggler  />
                         <MDBCollapse isOpen = { collapse } navbar>
                             <MDBNavbarNav left>
                                 <MDBNavItem>
-                                    <MDBNavLink to = "/home" onClick = {() => goto("/home")}>Home</MDBNavLink>
+                                    <MDBNavLink to = "/home" onClick = { goto}>Home</MDBNavLink>
                                 </MDBNavItem>
                                 </MDBNavbarNav>
                             <MDBNavbarNav right>

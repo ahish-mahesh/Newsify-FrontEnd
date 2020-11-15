@@ -32,9 +32,9 @@ export default function Home(){
     return(
         <div>
             <TopNav userDetails = {location.state !== null && location.state !== undefined ? location.state : null}/>
-            <MDBContainer style={Styling.container} className="text-center mt-5 pt-5">
+            {/* <MDBContainer style={Styling.container} className="text-center"> */}
                 <MainPage userDetails = {location.state !== null && location.state !== undefined ? location.state : null}/>
-            </MDBContainer>
+            {/* </MDBContainer> */}
         </div>
         );
 }

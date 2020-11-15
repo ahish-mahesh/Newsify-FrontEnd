@@ -10,7 +10,7 @@ import {
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {CardDeck, Card, Button } from 'react-bootstrap'
 import { MDBContainer } from 'mdbreact';
-
+import Footer from './Footer';
 
 export default function DetailedContent(props) {
     const location = useLocation();
@@ -24,18 +24,8 @@ export default function DetailedContent(props) {
         var url = "";
         if(location.state !== undefined && location.state !== null) {
             setPageNo(location.state.pageNo);
-            if(location.state.type === "headlines"){
-                setTitle("Top headlines for today");
-                url = 'http://newsapi.org/v2/top-headlines?country=in&page='+location.state.pageNo+'&apiKey=7ac4dc02591646bf91c5a3ccf45633f4';
-            }
-            else if(location.state.type === "bbc"){
-                setTitle("Top headlines from BBC");
-                url = 'http://newsapi.org/v2/top-headlines?sources=bbc-news&page='+location.state.pageNo+'&apiKey=7ac4dc02591646bf91c5a3ccf45633f4';
-            }
-            else if(location.state.type === "apple"){
-                setTitle("Top articles about Apple Inc.");
-                url = 'http://newsapi.org/v2/everything?q=Apple&page='+location.state.pageNo+'&from=2020-10-21&sortBy=popularity&apiKey=7ac4dc02591646bf91c5a3ccf45633f4';
-            }
+            setTitle(location.state.title);
+            url = location.state.navigationUrl+"&page="+pageNo+'&language=en&apiKey=7ac4dc02591646bf91c5a3ccf45633f4';
         }
         
         axios.get(url)
@@ -60,18 +50,8 @@ export default function DetailedContent(props) {
         console.log(pageNo)
         var url = "";
         if(location.state !== undefined && location.state !== null) {
-            if(location.state.type === "headlines"){
-                setTitle("Top headlines for today");
-                url = 'http://newsapi.org/v2/top-headlines?country=in&page='+pageNo+'&apiKey=7ac4dc02591646bf91c5a3ccf45633f4';
-            }
-            else if(location.state.type === "bbc"){
-                setTitle("Top headlines from BBC");
-                url = 'http://newsapi.org/v2/top-headlines?sources=bbc-news&page='+pageNo+'&apiKey=7ac4dc02591646bf91c5a3ccf45633f4';
-            }
-            else if(location.state.type === "apple"){
-                setTitle("Top articles about Apple Inc.");
-                url = 'http://newsapi.org/v2/everything?q=Apple&from=2020-10-21&page='+pageNo+'&sortBy=popularity&apiKey=7ac4dc02591646bf91c5a3ccf45633f4';
-            }
+            setTitle(location.state.title);
+            url = location.state.navigationUrl+"&page="+pageNo+'&language=en&apiKey=7ac4dc02591646bf91c5a3ccf45633f4';
         }
         
         axios.get(url)
@@ -136,15 +116,16 @@ export default function DetailedContent(props) {
 
     return(
     <div>
-        <TopNav username = {location.state !== null && location.state !== undefined ? location.state.username : null}/>
+        <TopNav userDetails = {location.state !== null && location.state !== undefined ? location.state : null}/>
 
         <MDBContainer style={styling.container} className="text-center mt-5 pt-5">
-            <h1>{title}</h1>
+            <h1 style = {styling.h1}>{title}</h1>
             {displayArticles()}
 
             {pageNo !== 1 ? <Button variant = "dark" href = "" onClick = {() => changePage(-1)}> {"<<"} Prev Page</Button> : null}
             <Button variant = "dark" href = "" onClick = {() => changePage(1)}>Next Page {">>"}</Button>
         </MDBContainer>
+        <Footer/>
     </div>);
 }
 
@@ -155,5 +136,9 @@ const styling = {
     },
     container: {
         height: "100vh",
-    }
+    },
+    h1 : {
+        margin: "2vh",
+        fontFamily: "Poynter"
+    },
 }

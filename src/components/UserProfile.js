@@ -21,15 +21,15 @@ export default function UserProfile(props){
     console.log("UserDetails state");
     console.log(location.state);
     const [username, setUsername ]= React.useState("");
-    const [password, setPassword] = React.useState("");
-    const [country, setCountry] = React.useState("");
+    const [password, setPassword] = React.useState(location.state.password);
+    const [country, setCountry] = React.useState(location.state.country);
     const [confirmPassword, setConfirmPassword] = React.useState(false);
     const [confirmPasswordText, setConfirmPasswordText] = React.useState(" ");
     const [confirmPasswordColor, setConfirmPasswordColor] = React.useState("");
     const [invokeUrl] = React.useState("http://127.0.0.1:5000/newsify")
 
-    const [ tags, setTags ] = React.useState([]);
-    const [ sources, setSources ] = React.useState([]);
+    const [ tags, setTags ] = React.useState(location.state.tags);
+    const [ sources, setSources ] = React.useState(location.state.sources);
     const [ sourceSuggestions, setSourceSuggestions ] = React.useState([]);
     const history = useHistory();
 
@@ -45,20 +45,22 @@ export default function UserProfile(props){
 
     // API call to get sources
     useEffect(() => {
-        var url = 'http://127.0.0.1:5000/newsify/users?username=ahishm&password=feb182012';
-        axios.get(url)
-        .then(res => {
-            setUserData(res.data['result'])
-            console.log("Userdetails fetch")
-            console.log(res.data['result']['username']);
-        }).catch(error => {
-            console.log(error);
-        })
+        // var url = 'http://127.0.0.1:5000/newsify/users?username=ahishm&password=feb182012';
+        // axios.get(url)
+        // .then(res => {
+        //     setUserData(res.data['result'])
+        //     console.log("Userdetails fetch")
+        //     console.log(res.data['result']['username']);
+        // }).catch(error => {
+        //     console.log(error);
+        // })
 
-        url = 'http://127.0.0.1:5000/newsify/sources';
+        setUserData(location.state);
+
+        var url = 'http://127.0.0.1:5000/newsify/sources';
         axios.get(url)
         .then(res => {
-        setSourceSuggestions(res.data['result']);
+            setSourceSuggestions(res.data['result']);
         }).catch(error => {
             console.log(error);
         })
@@ -70,51 +72,62 @@ export default function UserProfile(props){
     }
 
     const updatePassword = (e) => {
-        setPassword(e.target.value);
+        let temp = userData;
+        temp.password = e.target.value;
+        setUserData(temp);
     }
 
     const selectCountry = (val) => {
+        let temp = userData;
+        temp.country = val;
+        setUserData(temp);
         setCountry(val);
     }
 
     const checkPassword = (e) => {
-        if(e.target.value === password) {
-        setConfirmPassword(true);
-        setConfirmPasswordText("Password match!");
-        setConfirmPasswordColor("green");
+        if(e.target.value === userData.password) {
+            setConfirmPassword(true);
+            setConfirmPasswordText("Password match!");
+            setConfirmPasswordColor("green");
         }
         else {
-        setConfirmPassword(false);
-        setConfirmPasswordText("Password does not match!");
-        setConfirmPasswordColor("red");
+            setConfirmPassword(false);
+            setConfirmPasswordText("Password does not match!");
+            setConfirmPasswordColor("red");
         }
         
     }
 
-    const createCredentials = (e) => {
-        if(/\s/g.test(username) || username === "") {
-        window.alert("Enter a valid username.")
-        } else if (/\s/g.test(password) || password.length <= 4 || password === "" ) {
-        window.alert("Enter a valid password.")
+    const updateCredentials = (e) => {
+        if(/\s/g.test(userData.username) || userData.username === "") {
+            window.alert("Enter a valid username.")
+        } else if (/\s/g.test(userData.password) || userData.password.length <= 4 || userData.password === "" ) {
+            window.alert("Enter a valid password.")
         }
         else {
-        const url = invokeUrl+"/users?username="+username+"&password="+password+"&country="+country+"&tags="+tags;
-        // axios.post(url)
-        axios.post(invokeUrl+"/users", {
-            "username": username,
-            "password": password,
-            "country" :country,
-            "tags": tags,
-            "sources" : sources,
-        })
-        .then(res => {
-            if(res.data["result"] === "Exists"){
-            window.alert("User already exists!")
-            }
-            else {
-            history.push('/');
-            }
-        })
+        
+            axios.put(invokeUrl+"/users", {
+                "username": userData.username,
+                "password": userData.password,
+                "country" :userData.country,
+                "tags": userData.tags,
+                "sources" : userData.sources,
+            })
+            .then(res => {
+                if(res.data["result"] === "Exists"){
+                    window.alert("User already exists!")
+                }
+                else {
+                    window.alert("Successfully saved the changes.")
+                    history.push("/home", {
+                        username: userData.username,
+                        password: userData.password,
+                        tags: userData.tags,
+                        country: userData.country,
+                        sources: userData.sources,
+                    });
+                }
+            })
         }
         
     }
@@ -124,14 +137,20 @@ export default function UserProfile(props){
     }
 
     const handleDelete = (i, flag) => {
-        if(flag === 1){
-            let tempTags = tags.filter((tag, index) => index !== i);
+        if(flag === 1){            
+            let temp = userData;
+            temp.tags = temp.tags.filter((tag, index) => index !== i);
+            setUserData(temp);
 
+            let tempTags = tags.filter((tag, index) => index !== i);
             setTags(tempTags);
         }
         else {
-            let tempSources = sources.filter((source, index) => index !== i);
+            let temp = userData;
+            temp.tags = temp.sources.filter((source, index) => index !== i);
+            setUserData(temp);
 
+            let tempSources = sources.filter((source, index) => index !== i);
             setSources(tempSources);
         }
         
@@ -139,34 +158,50 @@ export default function UserProfile(props){
 
     const handleAddition = (newTag, flag) => {
         if(flag === 1) {
-        setTags([...tags, newTag]);
+            let temp = userData;
+            temp.tags = [...temp.tags, newTag];
+            console.log(temp.tags)
+            setUserData(temp);
+
+            setTags([...tags, newTag]);
         }
         else {
-        setSources([...sources, newTag]);
+            let temp = userData;
+            temp.sources = [...temp.sources, newTag];
+            setUserData(temp);
+
+            setSources([...sources, newTag]);
         }
         
     }
 
     const handleDrag = (tag, currPos, newPos, flag) => {
         if(flag === 1) {
-        const tempTags = tags;
-        const newTags = tempTags.slice();
+            const temp = userData;
+            const tempTags = temp.tags;
+            const newTags = tempTags.slice();
 
-        newTags.splice(currPos, 1);
-        newTags.splice(newPos, 0, tag);
+            newTags.splice(currPos, 1);
+            newTags.splice(newPos, 0, tag);
 
-        // re-render
-        setTags(newTags);
+            temp.tags = newTags;
+            setUserData(temp);
+
+            setTags(newTags);
+            
         }
         else {
-        const tempSources = sources;
-        const newSources = tempSources.slice();
+            const temp = userData;
+            const tempSources = temp.sources;
+            const newSources = tempSources.slice();
 
-        newSources.splice(currPos, 1);
-        newSources.splice(newPos, 0, tag);
+            newSources.splice(currPos, 1);
+            newSources.splice(newPos, 0, tag);
 
-        // re-render
-        setSources(newSources);
+            temp.sources = newSources;
+            setUserData(temp);
+
+            setSources(newSources);
         }
         
     }
@@ -208,7 +243,7 @@ export default function UserProfile(props){
                 <Form.Label> Country </Form.Label>
                 <br/>
                 <CountryDropdown
-                value = {userData["country"]}
+                value = {country}
                 valueType = "short"
                 onChange = {selectCountry}
                 style = {{
@@ -231,7 +266,7 @@ export default function UserProfile(props){
                 }} 
                 placeholder  = {'Keywords'}
                 inline={false}
-                tags={userData["tags"]}
+                tags={tags}
                 handleDelete={(i) => handleDelete(i, 1)}
                 handleAddition={(newTag) => handleAddition(newTag, 1)}
                 handleDrag={(tag, currPos, newPos) => handleDrag(tag, currPos, newPos, 1)}
@@ -252,7 +287,7 @@ export default function UserProfile(props){
                 }} 
                 placeholder  = {'News sources'}
                 inline={false}
-                tags={userData["sources"]}
+                tags={sources}
                 suggestions = {sourceSuggestions}
                 handleDelete={(i) => handleDelete(i, 2)}
                 handleAddition={(newTag) => handleAddition(newTag, 2)}
@@ -262,7 +297,7 @@ export default function UserProfile(props){
                 <br/>
 
                 <Button style = {styling.button} 
-                        onClick = {createCredentials}
+                        onClick = {updateCredentials}
                         variant = 'dark'>Save changes</Button>
                 <br/>
 
