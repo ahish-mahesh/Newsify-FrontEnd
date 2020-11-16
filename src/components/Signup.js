@@ -75,12 +75,11 @@ export default function Signup(props){
   const createCredentials = (e) => {
     if(/\s/g.test(username) || username === "") {
       window.alert("Enter a valid username.")
-    } else if (/\s/g.test(password) || password.length <= 4 || password === "" ) {
+    } else if (/\s/g.test(password) || password.length <= 4 || password === "" || confirmPassword !== true) {
       window.alert("Enter a valid password.")
     }
     else {
-      const url = invokeUrl+"/users?username="+username+"&password="+password+"&country="+country+"&tags="+tags;
-      // axios.post(url)
+      
       axios.post(invokeUrl+"/users", {
         "username": username,
         "password": password,

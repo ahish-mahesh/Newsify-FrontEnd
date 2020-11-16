@@ -20,8 +20,6 @@ export default function UserProfile(props){
     const location = useLocation();
     console.log("UserDetails state");
     console.log(location.state);
-    const [username, setUsername ]= React.useState("");
-    const [password, setPassword] = React.useState(location.state.password);
     const [country, setCountry] = React.useState(location.state.country);
     const [confirmPassword, setConfirmPassword] = React.useState(false);
     const [confirmPasswordText, setConfirmPasswordText] = React.useState(" ");
@@ -65,11 +63,9 @@ export default function UserProfile(props){
             console.log(error);
         })
 
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    const updateUsername = (e) => {
-        setUsername(e.target.value);
-    }
 
     const updatePassword = (e) => {
         let temp = userData;
@@ -101,7 +97,7 @@ export default function UserProfile(props){
     const updateCredentials = (e) => {
         if(/\s/g.test(userData.username) || userData.username === "") {
             window.alert("Enter a valid username.")
-        } else if (/\s/g.test(userData.password) || userData.password.length <= 4 || userData.password === "" ) {
+        } else if (/\s/g.test(userData.password) || userData.password.length <= 4 || userData.password === "" || confirmPassword !== true) {
             window.alert("Enter a valid password.")
         }
         else {
@@ -130,10 +126,6 @@ export default function UserProfile(props){
             })
         }
         
-    }
-
-    const goBackToLogin = () => {
-        history.push("/", );
     }
 
     const handleDelete = (i, flag) => {

@@ -14,7 +14,7 @@ import Footer from './Footer';
 export default function Login(props){
   const [username, setUsername ]= React.useState("");
   const [password, setPassword] = React.useState("");
-  const [invokeUrl,setInvokeUrl] = React.useState("http://127.0.0.1:5000/newsify")
+  const invokeUrl = "http://127.0.0.1:5000/newsify"
 
   const history = useHistory();
 

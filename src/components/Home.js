@@ -2,16 +2,9 @@ import React from 'react';
 import {
     useLocation,
     useHistory,
-    // Switch,
-    // Route,
-    // BrowserRouter as Router
 } from "react-router-dom";
 import MainPage from './MainPage';
-import DetailedContent from './DetailedContent'
 
-// MDB React
-import { MDBContainer
- } from 'mdbreact';
 import '@fortawesome/fontawesome-free/css/all.min.css'; 
 import 'bootstrap-css-only/css/bootstrap.min.css'; 
 import 'mdbreact/dist/css/mdb.css';
@@ -39,9 +32,9 @@ export default function Home(){
         );
 }
   
-const Styling = {
-    container: {
-        height: "100vh",
-    }
-};
+// const Styling = {
+//     container: {
+//         height: "100vh",
+//     }
+// };
 

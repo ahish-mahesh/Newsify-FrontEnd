@@ -19,6 +19,7 @@
     "react-google-login": "^5.1.21",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
+    "react-search-field": "^1.1.0",
     "react-tag-input": "^6.4.3"
   },
   "scripts": {

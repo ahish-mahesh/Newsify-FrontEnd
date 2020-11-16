@@ -14,10 +14,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
-import ListSubheader from '@material-ui/core/ListSubheader';
-import IconButton from '@material-ui/core/IconButton';
-// import InfoIcon from '@material-ui/icons/Info';
-import Footer from './Footer'
+
+import Footer from './Footer';
 
 export default function MainPage(props) {
     
@@ -44,7 +42,7 @@ export default function MainPage(props) {
         
         initializeSourceData(props.userDetails.sources[0].id);
         initializeTagData(props.userDetails.tags[0].id);
-
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const initializeSourceData = (id) => {
@@ -127,7 +125,7 @@ export default function MainPage(props) {
         var navigationUrl = 'http://newsapi.org/v2/everything?q='+id
 
         if( tagData[id] === undefined || tagData[id] === null) {
-            // return(null);
+            
             var url = 'http://newsapi.org/v2/everything?q='+id+'&from=2020-10-21&pageSize=4&language=en&apiKey=7ac4dc02591646bf91c5a3ccf45633f4';
 
             axios.get(url)
@@ -144,11 +142,6 @@ export default function MainPage(props) {
                                 <GridListTileBar
                                 title={eachArticle.title}
                                 subtitle={<span>{eachArticle.source.name}</span>}
-                                actionIcon={
-                                    <IconButton aria-label={`info about ${eachArticle.title}`} className={classes.icon}>
-                                    {/* <InfoIcon /> */}
-                                    </IconButton>
-                                }
                                 />
                             </GridListTile>
                             ))}
@@ -173,11 +166,6 @@ export default function MainPage(props) {
                             <GridListTileBar
                             title={eachArticle.title}
                             subtitle={<span>{eachArticle.source.name}</span>}
-                            actionIcon={
-                                <IconButton aria-label={`info about ${eachArticle.title}`} className={classes.icon}>
-                                {/* <InfoIcon /> */}
-                                </IconButton>
-                            }
                             />
                         </GridListTile>
                         ))}
@@ -213,7 +201,7 @@ export default function MainPage(props) {
         var navigationUrl = 'http://newsapi.org/v2/top-headlines?sources='+id;
 
         if( sourceData[id] === undefined || sourceData[id] === null) {
-            // return(null);
+            
             var url = 'http://newsapi.org/v2/top-headlines?sources='+id+'&pageSize=4&language=en&apiKey=7ac4dc02591646bf91c5a3ccf45633f4';
         
             axios.get(url)
@@ -231,11 +219,6 @@ export default function MainPage(props) {
                                 <GridListTileBar
                                 title={eachArticle.title}
                                 subtitle={<span>{eachArticle.source.name}</span>}
-                                actionIcon={
-                                    <IconButton aria-label={`info about ${eachArticle.title}`} className={classes.icon}>
-                                    {/* <InfoIcon /> */}
-                                    </IconButton>
-                                }
                                 />
                             </GridListTile>
                             ))}
@@ -261,11 +244,6 @@ export default function MainPage(props) {
                             <GridListTileBar
                             title={eachArticle.title}
                             subtitle={<span>{eachArticle.source.name}</span>}
-                            actionIcon={
-                                <IconButton aria-label={`info about ${eachArticle.title}`} className={classes.icon}>
-                                {/* <InfoIcon /> */}
-                                </IconButton>
-                            }
                             />
                         </GridListTile>
                         ))}
@@ -310,23 +288,9 @@ export default function MainPage(props) {
             <h2 style = {styling.h2}><strong>Headlines for you today</strong></h2>
             {displayHeadlines("headlines")}
             <br/>
-            <a  onClick = {() => goToDetailedContent('http://newsapi.org/v2/top-headlines?country='+props.userDetails.country, "Headlines for Today")}>More articles on Headlines >></a>
+            <Button variant="outline-dark" size="sm" onClick = {() => goToDetailedContent('http://newsapi.org/v2/top-headlines?country='+props.userDetails.country, "Headlines for Today")}>More articles on Headlines >></Button>
             <br/>
             <br/>
-
-            {/* <h2><strong>BBC News</strong></h2>
-            {displayNews("bbc")}
-            <br/>
-            <a  onClick = {() => goToDetailedContent("bbc")}>More articles from BBC >></a>
-            <br/>
-            <br/>
-
-            <h2><strong>Apple</strong></h2>
-            {displayNews("apple")}
-            <br/>
-            <a  onClick = {() => goToDetailedContent("apple")}>More articles about Apple >></a>
-            <br/>
-            <br/> */}
 
             <div >
                 {displaySourceTabs()}

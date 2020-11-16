@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import axios from 'axios';
-import TopNav from './TopNav'
+import TopNav from './TopNav';
 import {
     useLocation,
     useHistory
@@ -29,6 +29,7 @@ export default function DetailedContent(props) {
         }
         
         axios.get(url)
+        
         .then(res => {
         //   console.log(res.data.articles);
           let tempArticleSplit = []
@@ -43,33 +44,33 @@ export default function DetailedContent(props) {
         }).catch(error => {
             console.log(error);
         })
-
+   // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    const loadArticles = () => {
-        console.log(pageNo)
-        var url = "";
-        if(location.state !== undefined && location.state !== null) {
-            setTitle(location.state.title);
-            url = location.state.navigationUrl+"&page="+pageNo+'&language=en&apiKey=7ac4dc02591646bf91c5a3ccf45633f4';
-        }
+    // const loadArticles = () => {
+    //     console.log(pageNo)
+    //     var url = "";
+    //     if(location.state !== undefined && location.state !== null) {
+    //         setTitle(location.state.title);
+    //         url = location.state.navigationUrl+"&page="+pageNo+'&language=en&apiKey=7ac4dc02591646bf91c5a3ccf45633f4';
+    //     }
         
-        axios.get(url)
-        .then(res => {
-        //   console.log(res.data.articles);
-          let tempArticleSplit = []
+    //     axios.get(url)
+    //     .then(res => {
+    //     //   console.log(res.data.articles);
+    //       let tempArticleSplit = []
 
-          tempArticleSplit.push(res.data.articles.slice(0,4));
-          tempArticleSplit.push(res.data.articles.slice(4,8));
-          tempArticleSplit.push(res.data.articles.slice(8,12));
-          tempArticleSplit.push(res.data.articles.slice(12,16));
-          tempArticleSplit.push(res.data.articles.slice(16,20));
+    //       tempArticleSplit.push(res.data.articles.slice(0,4));
+    //       tempArticleSplit.push(res.data.articles.slice(4,8));
+    //       tempArticleSplit.push(res.data.articles.slice(8,12));
+    //       tempArticleSplit.push(res.data.articles.slice(12,16));
+    //       tempArticleSplit.push(res.data.articles.slice(16,20));
 
-          setArticles(tempArticleSplit);
-        }).catch(error => {
-            console.log(error);
-        })
-    }
+    //       setArticles(tempArticleSplit);
+    //     }).catch(error => {
+    //         console.log(error);
+    //     })
+    // }
 
     const changePage = (val) => {
         console.log("PGG "+pageNo)
@@ -99,12 +100,12 @@ export default function DetailedContent(props) {
                                         <Card.Title>{eachArticle.title}</Card.Title>
                                         <Card.Text>
                                             {eachArticle.content !== null ? eachArticle.content: eachArticle.description}
-                                        </Card.Text>    
+                                        </Card.Text>
                                     </Card.Body>
                                     <Card.Footer>
                                         <Button variant="outline-dark" size="sm" onClick = {() => goToURL(eachArticle.url)}>Read full article here</Button>
                                     </Card.Footer>
-                                </Card>                        
+                                </Card>
                             ))}
                         </CardDeck>
                         </div>
