@@ -15,6 +15,16 @@ import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListSubheader from '@material-ui/core/ListSubheader';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import Collapse from '@material-ui/core/Collapse';
+import ExpandLess from '@material-ui/icons/ExpandLess';
+import ExpandMore from '@material-ui/icons/ExpandMore';
+import StarBorder from '@material-ui/icons/StarBorder';
+
 import Footer from './Footer';
 
 export default function MainPage(props) {
@@ -22,27 +32,48 @@ export default function MainPage(props) {
     const [headlines, setHeadlines] = React.useState(null);
     const [sourceData, setSourceData] = React.useState({});
     const [tagData, setTagData] = React.useState({});
-    
+
+    const [covidData, setCovidData] = React.useState(null);
+    const [open, setOpen] = React.useState(false);
+
     const classes = useStyles();
 
+    
     const history = useHistory();
 
     // API call to get news
     useEffect(() => {
         
         var url = 'http://newsapi.org/v2/top-headlines?country='+props.userDetails.country+'&pageSize=5&language=en&apiKey=7ac4dc02591646bf91c5a3ccf45633f4';
+        // axios.get(url)
+        // .then(res => {
+        //     console.log(res.data.articles);
+        //     setHeadlines(res.data.articles);
+        // }).catch(error => {
+        //     console.log(error);
+        //     window.alert(error);
+        // })
+        
+        // initializeSourceData(props.userDetails.sources[0].id);
+        // initializeTagData(props.userDetails.tags[0].id);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+
+        url = "https://api.apify.com/v2/key-value-stores/toDWvRj1JpTXiM8FF/records/LATEST?disableRedirect=true"
         axios.get(url)
         .then(res => {
-            console.log(res.data.articles);
-            setHeadlines(res.data.articles);
+            console.log(res.data);
+            let temp = res.data;
+
+            temp["regionData"].forEach(eachRegion => {
+                eachRegion["open"] = false;
+            })
+
+            setCovidData(temp);
         }).catch(error => {
             console.log(error);
             window.alert(error);
         })
-        
-        initializeSourceData(props.userDetails.sources[0].id);
-        initializeTagData(props.userDetails.tags[0].id);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+
     }, [])
 
     const initializeSourceData = (id) => {
@@ -123,7 +154,6 @@ export default function MainPage(props) {
 
     const getTagData = (id, title) => {
         var navigationUrl = 'http://newsapi.org/v2/everything?q='+id
-
         if( tagData[id] === undefined || tagData[id] === null) {
             
             var url = 'http://newsapi.org/v2/everything?q='+id+'&from=2020-10-21&pageSize=4&language=en&apiKey=7ac4dc02591646bf91c5a3ccf45633f4';
@@ -188,7 +218,7 @@ export default function MainPage(props) {
                     {props.userDetails.tags.map( eachTag => {
                         return(
                             <Tab eventKey={eachTag.id} title={eachTag.text}>
-                                {getTagData(eachTag.id, eachTag.text)}
+                                {/* {getTagData(eachTag.id, eachTag.text)} */}
                             </Tab>
                         )
                     })}
@@ -272,7 +302,7 @@ export default function MainPage(props) {
                     {props.userDetails.sources.map( eachTag => {
                         return(
                             <Tab eventKey={eachTag.id} title={eachTag.text} >
-                                {getSourceData(eachTag.id, eachTag.text)}
+                                {/* {getSourceData(eachTag.id, eachTag.text)} */}
                             </Tab>
                         )
                     })}
@@ -283,8 +313,118 @@ export default function MainPage(props) {
         
     }
 
+    const displayCovidTracker = () => {
+        if(covidData === null) {
+            return null;
+        }
+
+        var nf = new Intl.NumberFormat();
+
+        return(
+            <div style = {styling.covidTracker}>
+                <h4 style = {styling.h4}>Covid Tracker</h4>
+                <h5 style = {styling.h4}>India</h5>
+
+                <List
+                    component="nav"
+                    aria-labelledby="nested-list-subheader"
+                    className={classes.listRoot}
+                    
+                >
+                    <ListItem button>                
+                        <strong>Total Cases:&emsp;</strong>{nf.format(covidData["totalCases"])}
+                    </ListItem>
+
+                    <ListItem button>
+                        <strong>Total Active cases:&emsp;</strong>{nf.format(covidData["activeCases"])}
+                    </ListItem>
+                    <ListItem button>                
+                        <strong>New Active cases today:&emsp;</strong>{nf.format(covidData["activeCasesNew"])}
+                    </ListItem>
+
+                    <ListItem button style = {{backgroundColor: "#e6ffe6"}}>                
+                        <strong>Total Recovered:&emsp;</strong>{nf.format(covidData["recovered"])}
+                    </ListItem>
+                    <ListItem button style = {{backgroundColor: "#e6ffe6"}}>                
+                        <strong>Newly Recovered:&emsp;</strong>{nf.format(covidData["recoveredNew"])}
+                    </ListItem>
+                    <ListItem button style = {{backgroundColor: "#ffe6e6"}}>                
+                        <strong>Total Deaths:&emsp;</strong>{nf.format(covidData["deaths"])}
+                    </ListItem>
+                    <ListItem button style = {{backgroundColor: "#ffe6e6"}}>                
+                        <strong>New Deaths:&emsp;</strong>{nf.format(covidData["deathsNew"])}
+                    </ListItem>
+
+                    <ListItem button>                
+                        <strong>Previous Day Tests:&emsp;</strong>{nf.format(covidData["previousDayTests"])}
+                    </ListItem>
+                    
+                    {displayCovidRegionData()}
+                    
+                </List>
+            </div>);
+    }
+
+    const displayCovidRegionData = () => {
+        var nf = new Intl.NumberFormat();
+
+        return(
+            <div>
+                <h6 style = {{margin: "3vh"}}><strong>Regional Statistics</strong></h6>
+                {covidData["regionData"].map((eachRegion, index) => (
+                    <div>
+                        <ListItem button onClick={() => handleClick(index)} >
+                            <ListItemText primary={eachRegion["region"]} />
+                            {eachRegion["open"] ? <ExpandLess /> : <ExpandMore />}
+                        </ListItem>
+
+                        
+                        <Collapse in={eachRegion["open"]} timeout="auto" unmountOnExit>
+                            <List   component="div" 
+                                    disablePadding
+                                    dense={true}
+                                    >
+                                <ListItem button className={classes.nested}>
+                                    <strong>Total infected:&emsp;</strong>{nf.format(eachRegion["totalInfected"])}
+                                </ListItem>
+
+                                <ListItem button className={classes.nested}>
+                                    <strong>Newly infected:&emsp;</strong>{nf.format(eachRegion["newInfected"])}
+                                </ListItem>
+
+                                <ListItem button className={classes.nested} style = {{backgroundColor: "#e6ffe6"}}>
+                                    <strong>Total Recovered:&emsp;</strong>{nf.format(eachRegion["recovered"])}
+                                </ListItem>
+
+                                <ListItem button className={classes.nested} style = {{backgroundColor: "#e6ffe6"}}>
+                                    <strong>Newly recovered:&emsp;</strong>{nf.format(eachRegion["newRecovered"])}
+                                </ListItem>
+
+                                <ListItem button className={classes.nested} style = {{backgroundColor: "#ffe6e6"}}>
+                                    <strong>Total Deceased:&emsp;</strong>{nf.format(eachRegion["deceased"])}
+                                </ListItem>
+
+                                <ListItem button className={classes.nested} style = {{backgroundColor: "#ffe6e6"}}>
+                                    <strong>Newly deceased:&emsp;</strong>{nf.format(eachRegion["newDeceased"])}
+                                </ListItem>
+                            </List>
+                        </Collapse>
+                    </div>
+                ))}
+            </div>
+        );
+    }
+
+    const handleClick = (index) => {
+        let temp = covidData;
+        temp["regionData"][index]["open"] = !temp["regionData"][index]["open"];
+        setCovidData(temp);
+        setOpen(!open);
+    };
+
     return (
         <div style = {{margin: "15vh", textAlign: "center"}}>
+            {displayCovidTracker()}
             <h2 style = {styling.h2}><strong>Headlines for you today</strong></h2>
             {displayHeadlines("headlines")}
             <br/>
@@ -292,7 +432,7 @@ export default function MainPage(props) {
             <br/>
             <br/>
 
-            <div >
+            <div style = {{marginTop: "50vh"}}>
                 {displaySourceTabs()}
                 {displayTagTabs()}
             </div>
@@ -306,8 +446,21 @@ const styling = {
         margin: "2vh",
         fontFamily: "Poynter"
     },
+    h4 : {
+        margin: "1vh",
+        fontFamily: "Poynter",
+        textAlign: "center",
+    },
     newsTile: {
         cursor: "pointer",
+    },
+    covidTracker: {
+        position: 'absolute',
+        left: "2vw",
+        top: "15vh",
+        borderRight: "1px solid black",
+        height: "50vh",
+        width: "20vw",
     }
 }
 
@@ -326,5 +479,17 @@ const useStyles = makeStyles((theme) => ({
     },
     icon: {
       color: 'rgba(255, 255, 255, 0.54)',
+    },
+    listRoot: {
+        width: '100%',
+        maxWidth: 360,
+        fontSize: "15px",
+        maxHeight: "40vh",
+        overflow: "auto",
+        scrollbarWidth: "none",
+        backgroundColor: theme.palette.background.paper,
+    },
+    nested: {
+        paddingLeft: theme.spacing(4),
     },
   }));

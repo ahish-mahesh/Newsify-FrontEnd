@@ -49,6 +49,14 @@ export default function Login(props){
             country: res.data["result"]["country"],
             sources: res.data["result"]["sources"],
           });
+
+          // history.push('/search', {
+          //   username: res.data["result"]['username'], 
+          //   password: res.data["result"]['password'], 
+          //   tags: res.data["result"]["tags"],
+          //   country: res.data["result"]["country"],
+          //   sources: res.data["result"]["sources"],
+          // });
         }
         
       }).catch(error => {
