@@ -11,9 +11,9 @@ import {Button ,Form} from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { CountryDropdown } from 'react-country-region-selector';
 import { WithContext as ReactTags } from 'react-tag-input';
-import './Styling/reactTags.css';
+import '../Styling/reactTags.css';
 
-import TopNav from './TopNav'
+import TopNav from '../MainContent/TopNav'
 import { MDBContainer } from 'mdbreact';
 
 export default function UserProfile(props){

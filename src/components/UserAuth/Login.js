@@ -9,7 +9,7 @@ import axios from 'axios';
 import {Button } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import Footer from './Footer';
+import Footer from '../MainContent/Footer';
 
 export default function Login(props){
   const [username, setUsername ]= React.useState("");

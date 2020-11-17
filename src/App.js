@@ -5,12 +5,12 @@ import {
   Route,
   useHistory
 } from "react-router-dom";
-import Login from './components/Login';
-import Signup from './components/Signup';
-import Home from './components/Home';
-import DetailedContent from './components/DetailedContent';
-import UserProfile from './components/UserProfile';
-import Search from './components/Search'
+import Login from './components/UserAuth/Login';
+import Signup from './components/UserAuth/Signup';
+import Home from './components/MainContent/Home';
+import DetailedContent from './components/SideContent/DetailedContent';
+import UserProfile from './components/SideContent/UserProfile';
+import Search from './components/SideContent/Search'
 
 export default function App(){
   const history = useHistory();

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import axios from 'axios';
-import TopNav from './TopNav';
+import TopNav from '../MainContent/TopNav';
 import {
     useLocation,
     useHistory
@@ -10,7 +10,7 @@ import {
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {CardDeck, Card, Button } from 'react-bootstrap'
 import { MDBContainer } from 'mdbreact';
-import Footer from './Footer';
+import Footer from '../MainContent/Footer';
 
 export default function DetailedContent(props) {
     const location = useLocation();

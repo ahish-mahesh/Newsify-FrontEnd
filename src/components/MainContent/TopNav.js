@@ -18,8 +18,8 @@ import 'mdbreact/dist/css/mdb.css';
 
 export default function TopNav (props) {
 
-    console.log("TopNav props")
-    console.log(props);
+    // console.log("TopNav props")
+    // console.log(props);
     const history = useHistory();
 
 

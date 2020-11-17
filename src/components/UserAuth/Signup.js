@@ -10,7 +10,7 @@ import {Button } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { CountryDropdown } from 'react-country-region-selector';
 import { WithContext as ReactTags } from 'react-tag-input';
-import './Styling/reactTags.css';
+import '../Styling/reactTags.css';
 
 export default function Signup(props){
   const [username, setUsername ]= React.useState("");
