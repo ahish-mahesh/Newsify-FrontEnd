@@ -14,7 +14,7 @@ code {
 
 .footer {
 	margin-top: 1vh;
-	padding: 0.2vh;
+	/* padding: 0.1vh; */
 	background-color: #fff;
 	color: #888;
 	position: fixed;
@@ -22,4 +22,5 @@ code {
 	left: 0;
 	width: 100%;
 	font-size: 12px;
+	text-align: center;
 }

@@ -17,13 +17,10 @@ import GridListTileBar from '@material-ui/core/GridListTileBar';
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import ListSubheader from '@material-ui/core/ListSubheader';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Collapse from '@material-ui/core/Collapse';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
-import StarBorder from '@material-ui/icons/StarBorder';
 
 import Footer from './Footer';
 
@@ -45,18 +42,14 @@ export default function MainPage(props) {
     useEffect(() => {
         
         var url = 'http://newsapi.org/v2/top-headlines?country='+props.userDetails.country+'&pageSize=5&language=en&apiKey=7ac4dc02591646bf91c5a3ccf45633f4';
-        // axios.get(url)
-        // .then(res => {
-        //     console.log(res.data.articles);
-        //     setHeadlines(res.data.articles);
-        // }).catch(error => {
-        //     console.log(error);
-        //     window.alert(error);
-        // })
-        
-        // initializeSourceData(props.userDetails.sources[0].id);
-        // initializeTagData(props.userDetails.tags[0].id);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        axios.get(url)
+        .then(res => {
+            console.log(res.data.articles);
+            setHeadlines(res.data.articles);
+        }).catch(error => {
+            console.log(error);
+            window.alert(error);
+        })
 
         url = "https://api.apify.com/v2/key-value-stores/toDWvRj1JpTXiM8FF/records/LATEST?disableRedirect=true"
         axios.get(url)
@@ -74,6 +67,9 @@ export default function MainPage(props) {
             window.alert(error);
         })
 
+        initializeSourceData(props.userDetails.sources[0].id);
+        initializeTagData(props.userDetails.tags[0].id);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const initializeSourceData = (id) => {
@@ -143,8 +139,8 @@ export default function MainPage(props) {
                         onClick = {() => goToURL(eachArticle.url)}
                         />
                         <Carousel.Caption>
-                        <h3 onClick = {() => goToURL(eachArticle.url)}>{eachArticle.title}</h3>
-                        <p onClick = {() => goToURL(eachArticle.url)}>{eachArticle.content !== null ? eachArticle.content: eachArticle.description}</p>
+                        <h3 style = {{backgroundColor: "#888", opacity: "0.8"}} onClick = {() => goToURL(eachArticle.url)}>{eachArticle.title}</h3>
+                        <p style = {{backgroundColor: "#888", opacity: "0.8"}} onClick = {() => goToURL(eachArticle.url)}>{eachArticle.content !== null ? eachArticle.content: eachArticle.description}</p>
                         </Carousel.Caption>
                 </Carousel.Item>
                 ))}
@@ -218,7 +214,7 @@ export default function MainPage(props) {
                     {props.userDetails.tags.map( eachTag => {
                         return(
                             <Tab eventKey={eachTag.id} title={eachTag.text}>
-                                {/* {getTagData(eachTag.id, eachTag.text)} */}
+                                {getTagData(eachTag.id, eachTag.text)}
                             </Tab>
                         )
                     })}
@@ -302,7 +298,7 @@ export default function MainPage(props) {
                     {props.userDetails.sources.map( eachTag => {
                         return(
                             <Tab eventKey={eachTag.id} title={eachTag.text} >
-                                {/* {getSourceData(eachTag.id, eachTag.text)} */}
+                                {getSourceData(eachTag.id, eachTag.text)}
                             </Tab>
                         )
                     })}
@@ -432,7 +428,7 @@ export default function MainPage(props) {
             <br/>
             <br/>
 
-            <div style = {{marginTop: "50vh"}}>
+            <div style = {{marginTop: "5vh"}}>
                 {displaySourceTabs()}
                 {displayTagTabs()}
             </div>
@@ -459,7 +455,7 @@ const styling = {
         left: "2vw",
         top: "15vh",
         borderRight: "1px solid black",
-        height: "50vh",
+        height: "70vh",
         width: "20vw",
     }
 }
@@ -484,7 +480,7 @@ const useStyles = makeStyles((theme) => ({
         width: '100%',
         maxWidth: 360,
         fontSize: "15px",
-        maxHeight: "40vh",
+        maxHeight: "60vh",
         overflow: "auto",
         scrollbarWidth: "none",
         backgroundColor: theme.palette.background.paper,

@@ -8,7 +8,7 @@ import {
 
 //Bootstrap imports
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {CardDeck, Card, Button } from 'react-bootstrap'
+import {CardDeck, Card, Button } from 'react-bootstrap';
 import { MDBContainer } from 'mdbreact';
 import Footer from '../MainContent/Footer';
 
@@ -136,7 +136,8 @@ const styling = {
         marginBottom: "2vh",
     },
     container: {
-        height: "100vh",
+        // height: "100vh",
+        marginBottom: "5vh",
     },
     h1 : {
         margin: "2vh",

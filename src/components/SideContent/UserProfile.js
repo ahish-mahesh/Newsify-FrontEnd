@@ -21,7 +21,7 @@ export default function UserProfile(props){
     console.log("UserDetails state");
     console.log(location.state);
     const [country, setCountry] = React.useState(location.state.country);
-    const [confirmPassword, setConfirmPassword] = React.useState(false);
+    const [confirmPassword, setConfirmPassword] = React.useState(true);
     const [confirmPasswordText, setConfirmPasswordText] = React.useState(" ");
     const [confirmPasswordColor, setConfirmPasswordColor] = React.useState("");
     const [invokeUrl] = React.useState("http://127.0.0.1:5000/newsify")
@@ -95,9 +95,7 @@ export default function UserProfile(props){
     }
 
     const updateCredentials = (e) => {
-        if(/\s/g.test(userData.username) || userData.username === "") {
-            window.alert("Enter a valid username.")
-        } else if (/\s/g.test(userData.password) || userData.password.length <= 4 || userData.password === "" || confirmPassword !== true) {
+        if (/\s/g.test(userData.password) || userData.password.length <= 4 || userData.password === "" || confirmPassword !== true) {
             window.alert("Enter a valid password.")
         }
         else {

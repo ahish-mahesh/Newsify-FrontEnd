@@ -10,7 +10,9 @@ import 'bootstrap-css-only/css/bootstrap.min.css';
 import 'mdbreact/dist/css/mdb.css';
 
 import {
-    Button
+    Button,
+    CardDeck, 
+    Card
 } from 'react-bootstrap'
 
 import {TextField} from '@material-ui/core';
@@ -20,6 +22,8 @@ import "react-datepicker/dist/react-datepicker.css";
 
 import { WithContext as ReactTags } from 'react-tag-input';
 import '../Styling/reactTags.css';
+
+
 
 import TopNav from '../MainContent/TopNav';
 import Footer from '../MainContent/Footer';
@@ -38,6 +42,9 @@ export default function Search(){
 
     const [ toDate, setToDate ] = React.useState(null);
     const [ toDateString, setToDateString ] = React.useState(null);
+
+    const [ searchUrl, setSearchUrl ] = React.useState(null);
+    const [ searchResults, setSearchResults ] = React.useState(null);
 
     if(location.state === undefined || location.state === null){
         console.log("Home state not found")
@@ -110,13 +117,18 @@ export default function Search(){
         setSources(newSources);
     }
 
+    const goToURL = (url) => {
+        window.open(url);
+    }
+
     const executeSearch = () => {
 
-        if(/\s/g.test(searchText) || searchText === "") {
+        if(searchText === "") {
             window.alert("Enter a valid search value.");
         }
+        let encodedSearchText = encodeURIComponent(searchText.trim())
 
-        var url = 'http://newsapi.org/v2/everything?q='+searchText+'&apiKey=7ac4dc02591646bf91c5a3ccf45633f4&language=en';
+        var url = 'http://newsapi.org/v2/everything?q='+encodedSearchText+'&apiKey=7ac4dc02591646bf91c5a3ccf45633f4&language=en';
 
         if(fromDate !== null) {
             url += '&from='+fromDateString;
@@ -126,13 +138,15 @@ export default function Search(){
             url += '&to='+toDateString;
         }
         else {
-            let tempDate = new Date();
-            let tempDateString = tempDate.getFullYear()+"-"+tempDate.getMonth()+"-"+tempDate.getDate()
+            // let tempDate = new Date();
+            // let tempDateString = tempDate.getFullYear()+"-"+tempDate.getMonth()+"-"+tempDate.getDate()
 
-            url += '&to='+tempDateString;
+            // url += '&to='+tempDateString;
         }
 
-        if(sources !== []) {
+        if(sources.length !== 0) {
+            console.log("sources");
+            console.log(sources);
             let sourcesString = '';
             sources.forEach((eachSource, index) => {
                 if(index !== sources.length-1) {
@@ -146,8 +160,58 @@ export default function Search(){
         }
 
         console.log(url);
-        window.alert(searchText);
+        // window.alert(searchText);
+        setSearchUrl(url);
+
+        axios.get(searchUrl)
+        .then(res => {
+            let tempArticleSplit = []
+
+            tempArticleSplit.push(res.data.articles.slice(0,4));
+            tempArticleSplit.push(res.data.articles.slice(4,8));
+            tempArticleSplit.push(res.data.articles.slice(8,12));
+            tempArticleSplit.push(res.data.articles.slice(12,16));
+            tempArticleSplit.push(res.data.articles.slice(16,20));
+
+            setSearchResults(tempArticleSplit);
+        }).catch(error => {
+            console.log(error);
+        })
     }
+
+    const renderSearchResults = () => {
+        if(searchResults === null) {
+            return null;
+        }
+
+       return(
+            <div>
+                <h3 style = {Styling.h2}>Search results for {searchText}</h3>
+                {searchResults.map( (eachArticleSplit) => (
+                    <div style = {Styling.card}>
+                    <CardDeck>
+                        {eachArticleSplit.map( eachArticle => (
+                            <Card className="mb-2">
+                                <Card.Img variant = "top" src = {eachArticle.urlToImage}/>
+                                <Card.Body>
+                                    <Card.Title>{eachArticle.title}</Card.Title>
+                                    <Card.Text>
+                                        {eachArticle.content !== null ? eachArticle.content: eachArticle.description}
+                                    </Card.Text>
+                                </Card.Body>
+                                <Card.Footer>
+                                    <Button variant="outline-dark" size="sm" onClick = {() => goToURL(eachArticle.url)}>Read full article here</Button>
+                                </Card.Footer>
+                            </Card>
+                        ))}
+                    </CardDeck>
+                    </div>
+                ))}
+            </div>
+        )
+    }
+
+
 
     return(
         <div>
@@ -186,29 +250,31 @@ export default function Search(){
                 </div>
 
                 <ReactTags
-                classNames={{
-                    tags: 'ReactTags__tags',
-                    tagInput: 'ReactTags__tagInput',
-                    tagInputField: 'ReactTags__tagInputField',
-                    selected: 'ReactTags__selected',
-                    tag: 'ReactTags__selected ReactTags__tag',
-                    remove: 'ReactTags__selected ReactTags__remove',
-                    suggestions: 'ReactTags__suggestions',
-                    activeSuggestion: 'ReactTags__activeSuggestion'
-                }}
-                style = {Styling.dateBox}
-                inputFieldPosition="top"
-                placeholder  = {'News sources'}                
-                tags={sources}
-                suggestions = {sourceSuggestions}
-                handleDelete={(i) => handleDelete(i)}
-                handleAddition={(newTag) => handleAddition(newTag)}
-                handleDrag={(tag, currPos, newPos) => handleDrag(tag, currPos, newPos)}
-                delimiters={delimiters} />
+                    classNames={{
+                        tags: 'ReactTags__tags',
+                        tagInput: 'ReactTags__tagInput',
+                        tagInputField: 'ReactTags__tagInputField',
+                        selected: 'ReactTags__selected',
+                        tag: 'ReactTags__selected ReactTags__tag',
+                        remove: 'ReactTags__selected ReactTags__remove',
+                        suggestions: 'ReactTags__suggestions',
+                        activeSuggestion: 'ReactTags__activeSuggestion'
+                    }}
+                    style = {Styling.dateBox}
+                    inputFieldPosition="top"
+                    placeholder  = {'News sources'}                
+                    tags={sources}
+                    suggestions = {sourceSuggestions}
+                    handleDelete={(i) => handleDelete(i)}
+                    handleAddition={(newTag) => handleAddition(newTag)}
+                    handleDrag={(tag, currPos, newPos) => handleDrag(tag, currPos, newPos)}
+                    delimiters={delimiters} />
 
                 
             </div>
                 <Button variant="dark" size="sm" style = {Styling.searchButton} onClick = {executeSearch}>Search</Button>
+
+            {renderSearchResults()}
             <Footer />
         </div>
         );
@@ -226,7 +292,7 @@ const Styling = {
     searchBar: {
         display: "flex",
         marginTop: "5vh",
-        marginLeft: "10vw",
+        marginLeft: "18vw",
     },
     searchBox: {
         margin: "2vh",
@@ -234,12 +300,17 @@ const Styling = {
     },
     dateBox: {
         margin: "3vh",
+        height: "20px"
     },
     searchButton: {
         height: "4vh", 
         marginTop: "3vh",
         marginLeft: "48%",
-    }
+    },
+    card: {
+        marginTop: "2vh",
+        marginBottom: "2vh",
+    },
 
 };
 
