@@ -22,7 +22,7 @@ This project is planned to be a built as a web application using a REST API to f
 | Purpose       | Technologies used |
 |---------------|-------------------|
 | Front end     | ReactJS           |
-| Back end      | C++               |
+| Back end      | Python               |
 | Database      | MySQL             |
 
 
